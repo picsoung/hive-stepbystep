@@ -15,82 +15,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  conversation_id:
-                    type: string
-                    format: uuid
-                  start_date:
-                    type: string
-                    format: time
-                  field:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                        format: uuid
-                      ref:
-                        type: string
-                        format: uuid
-                      title:
-                        type: string
-                      computed_title:
-                        type: string
-                      type:
-                        type: string
-                        enum:
-                          - welcome_screen
-                          - thankyou_screen
-                          - short_text
-                          - long_text
-                          - multiple_choice
-                          - picture_choice
-                          - file_upload
-                          - opinion_scale
-                          - rating
-                          - phone_number
-                          - statement
-                          - yes_no
-                          - email
-                          - date
-                          - number
-                          - dropdown
-                          - legal
-                          - payment
-                          - website
-                      properties:
-                        type: object
-                        properties:
-                          button_text:
-                            type: string
-                          randomize:
-                            type: boolean
-                          choices:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                label:
-                                  type: string
-                      attachment:
-                        type: object
-                        properties:
-                          type:
-                            type: string
-                            enum:
-                              - image
-                            example: image
-                          href:
-                            type: string
-                            format: uri
-                      validations:
-                        type: object
-                        properties:
-                          required:
-                            type: boolean
-                required:
-                  - conversation_id
-                  - start_date
+                $ref: '#/components/schemas/Step'
               examples:
                 example-1:
                   value:
@@ -143,25 +68,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  name:
-                    type: string
-                  id:
-                    type: string
-                  date_created:
-                    type: string
-                  date_updated:
-                    type: string
-                  state:
-                    type: string
-                  steps:
-                    type: string
-                  metadata:
-                    type: object
-                    properties:
-                      user-agent:
-                        type: string
+                $ref: '#/components/schemas/Conversation'
               examples:
                 example-1: {}
       operationId: get-conversation
@@ -187,16 +94,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  state:
-                    type: string
-                    enum:
-                      - start
-                      - ongoing
-                      - ended
-                      - abandonned
-                      - submitted
+                $ref: '#/components/schemas/Conversation'
               examples: {}
       description: change state of conversation
       requestBody:
@@ -258,5 +156,144 @@ paths:
                   type: string
               required:
                 - form_id
+  '/conversation/{conversation_id}/submit':
+    parameters:
+      - schema:
+          type: string
+        name: conversation_id
+        in: path
+        required: true
+    post:
+      summary: submit conversation results
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      operationId: post-conversation-conversation_id-submit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
 components:
-  schemas: {}
+  schemas:
+    Conversation:
+      title: Conversation
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+        date_created:
+          type: string
+          format: date-time
+        date_updated:
+          type: string
+          format: date-time
+        state:
+          type: string
+          enum:
+            - start
+            - end
+            - submitted
+            - ongoing
+            - abandonned
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/Step'
+        metadata:
+          type: object
+          properties:
+            user-agent:
+              type: string
+    Step:
+      title: Step
+      type: object
+      description: ''
+      properties:
+        id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        conversation_state:
+          type: string
+        start_date:
+          type: string
+          format: time
+        field:
+          $ref: '#/components/schemas/Field'
+    Field:
+      title: Field
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        ref:
+          type: string
+          format: uuid
+        title:
+          type: string
+        computed_title:
+          type: string
+        type:
+          type: string
+          enum:
+            - welcome_screen
+            - thankyou_screen
+            - short_text
+            - long_text
+            - multiple_choice
+            - picture_choice
+            - file_upload
+            - opinion_scale
+            - rating
+            - phone_number
+            - statement
+            - yes_no
+            - email
+            - date
+            - number
+            - dropdown
+            - legal
+            - payment
+            - website
+        properties:
+          type: object
+          properties:
+            button_text:
+              type: string
+            randomize:
+              type: boolean
+            choices:
+              type: array
+              items:
+                type: object
+                properties:
+                  label:
+                    type: string
+        attachment:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - image
+              example: image
+            href:
+              type: string
+              format: uri
+        validations:
+          type: object
+          properties:
+            required:
+              type: boolean
