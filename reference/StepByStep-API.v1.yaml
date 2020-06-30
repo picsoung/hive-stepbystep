@@ -5,7 +5,7 @@ info:
 servers:
   - url: 'http://localhost:3000'
 paths:
-  /start:
+  '/conversation/{conversation_id}/step':
     post:
       summary: start a step by step conversation
       tags: []
@@ -22,6 +22,7 @@ paths:
                     format: uuid
                   start_date:
                     type: string
+                    format: time
                   field:
                     type: object
                     properties:
@@ -113,18 +114,25 @@ paths:
             schema:
               type: object
               properties:
-                name:
+                field_id:
                   type: string
-                form_id:
+                value:
                   type: string
               required:
-                - form_id
+                - value
             examples:
               Fav color:
                 value:
                   form_id: Xc1v7Sis
                   name: get form color
         description: ''
+      description: ''
+    parameters:
+      - schema:
+          type: string
+        name: conversation_id
+        in: path
+        required: true
   '/conversation/{conversation_id}':
     get:
       summary: Your GET endpoint
@@ -149,10 +157,15 @@ paths:
                     type: string
                   steps:
                     type: string
+                  metadata:
+                    type: object
+                    properties:
+                      user-agent:
+                        type: string
               examples:
                 example-1: {}
       operationId: get-conversation
-      description: get conversation detail
+      description: get conversation details
       requestBody:
         content:
           application/json:
@@ -165,5 +178,85 @@ paths:
         name: conversation_id
         in: path
         required: true
+    put:
+      summary: ''
+      operationId: put-conversation-conversation_id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                    enum:
+                      - start
+                      - ongoing
+                      - ended
+                      - abandonned
+                      - submitted
+              examples: {}
+      description: change state of conversation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  enum:
+                    - start
+                    - end
+                    - ongoing
+                    - aborted
+                    - submitted
+            examples:
+              start conversation:
+                value:
+                  state: start
+  /conversation:
+    post:
+      summary: create a new conversation
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversation_id:
+                    type: string
+                    format: uuid
+                  form_id:
+                    type: string
+                    description: The human-readable name of this conversation.
+                  url:
+                    type: string
+                    format: uri
+                    description: conversation interface
+                  state:
+                    type: string
+                    default: ready
+        '':
+          description: ''
+      operationId: post-conversation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                form_id:
+                  type: string
+                  pattern: '([0-9a-zA-Z]{6,8})'
+                name:
+                  type: string
+              required:
+                - form_id
 components:
   schemas: {}
