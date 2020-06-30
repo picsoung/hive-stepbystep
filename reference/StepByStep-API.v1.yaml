@@ -1,0 +1,94 @@
+openapi: 3.0.0
+info:
+  title: StepByStep API
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /start:
+    post:
+      summary: start a step by step conversation
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversation_id:
+                    type: string
+                  field:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      ref:
+                        type: string
+                      title:
+                        type: string
+                      computed_title:
+                        type: string
+                      type:
+                        type: string
+                      properties:
+                        type: object
+                        properties:
+                          '':
+                            type: string
+              examples:
+                example-1:
+                  value:
+                    id: w6BN6LeMeFYI
+                    ref: d3ee3fd4-6099-4bdb-99fa-8eb830691cc4
+                    title: Welcome to the Step-by-Step API Demo Form!
+                    properties:
+                      show_button: true
+                      button_text: Start
+                    attachment:
+                      type: image
+                      href: 'https://images.typeform.com/images/67D6EVTHzuH5'
+      operationId: post-start
+  '/conversation/{conversation_id}':
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  id:
+                    type: string
+                  date_created:
+                    type: string
+                  date_updated:
+                    type: string
+                  state:
+                    type: string
+                  steps:
+                    type: string
+              examples:
+                example-1: {}
+      operationId: get-conversation
+      description: get conversation detail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+    parameters:
+      - schema:
+          type: string
+        name: conversation_id
+        in: path
+        required: true
+components:
+  schemas: {}
