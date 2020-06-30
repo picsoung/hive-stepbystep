@@ -1,7 +1,8 @@
 openapi: 3.0.0
 info:
-  title: StepByStep API
+  title: Conversation API
   version: '1.0'
+  description: One question at a time conversation API
 servers:
   - url: 'http://localhost:3000'
 paths:
@@ -43,15 +44,13 @@ paths:
                   type: string
                 value:
                   type: string
-              required:
-                - value
             examples:
               Fav color:
                 value:
                   form_id: Xc1v7Sis
                   name: get form color
         description: ''
-      description: ''
+      description: get the new step depending of the current field and the value collected
     parameters:
       - schema:
           type: string
@@ -140,8 +139,6 @@ paths:
                   state:
                     type: string
                     default: ready
-        '':
-          description: ''
       operationId: post-conversation
       requestBody:
         content:
@@ -156,6 +153,7 @@ paths:
                   type: string
               required:
                 - form_id
+      description: create a new conversation
   '/conversation/{conversation_id}/submit':
     parameters:
       - schema:
@@ -172,14 +170,14 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties: {}
+                $ref: '#/components/schemas/Conversation'
       operationId: post-conversation-conversation_id-submit
       requestBody:
         content:
           application/json:
             schema:
               type: object
+      description: submit the data collected in the conversation
 components:
   schemas:
     Conversation:
