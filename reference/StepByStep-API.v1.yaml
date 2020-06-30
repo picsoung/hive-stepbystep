@@ -20,6 +20,8 @@ paths:
                   conversation_id:
                     type: string
                     format: uuid
+                  start_date:
+                    type: string
                   field:
                     type: object
                     properties:
@@ -85,6 +87,9 @@ paths:
                         properties:
                           required:
                             type: boolean
+                required:
+                  - conversation_id
+                  - start_date
               examples:
                 example-1:
                   value:
@@ -107,7 +112,19 @@ paths:
           application/json:
             schema:
               type: object
-              properties: {}
+              properties:
+                name:
+                  type: string
+                form_id:
+                  type: string
+              required:
+                - form_id
+            examples:
+              Fav color:
+                value:
+                  form_id: Xc1v7Sis
+                  name: get form color
+        description: ''
   '/conversation/{conversation_id}':
     get:
       summary: Your GET endpoint
